@@ -1,0 +1,112 @@
+---
+title: "Exploring the BRFSS data"
+output: 
+  html_document: 
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+
+## Setup
+
+### Load packages
+
+```{r load-packages, message = FALSE}
+library(ggplot2)
+library(dplyr)
+```
+
+### Load data
+
+ 
+
+```{r load-data}
+load("brfss2013.RData")
+```
+
+
+
+* * *
+
+## Part 1: Data
+
+Behavorial Risk Factor Surveillance System(BRFSS) is an initiation of Centers for Diseases Control and Prevention(CDC), is aimed for a cross-sectional telephone survey that state health departments conduct monthly telephones survey through landline and cellular telephones with their standardized questioners.Collection of data is done according to the BRFSS protocols. In general surveys are conducted through 20% interviews on weekdays and 80% on weekends.
+
+As BRFSS is a survey related to health so that's questioners was developed in collaboration between CDC and health departments in each state and in this survey some protocols like:
+   -> All states ask the core questions without modification.
+   -> An eligible household is defined as a housing unit.
+   -> Eligible household members include all related adults(more than 18 years)
+   
+We can only apply correlation as because BRFSS survey is oprtional not experimental.
+
+* * *
+
+## Part 2: Research questions
+
+**Research quesion 1:**
+Try to find out a correlation between the level of income and smokers who smokes. One with high  level of income smokes because of his high level of stress.what will be its effect on general health.
+
+**Research quesion 2:**
+Finding a correlation between the level of income and having good health. it will tell us if level of income is high then individual has stress or not.
+
+**Research quesion 3:**
+We try to find a correlation between a general good health and mental health. A person having general good health also has a good mental health.
+
+
+* * *
+
+## Part 3: Exploratory data analysis
+
+
+**Research quesion 1:**
+
+```{r}
+#Relation in between income & Smoking
+EDA1 <- select(brfss2013, income2, sex, smoke100,  genhlth) %>%
+  filter(!is.na(income2), !is.na(sex), !is.na(genhlth))
+
+EDA1 %>%
+  group_by(income2)%>%
+  summary(count=n())
+
+
+ggplot(data=EDA1, aes(smoke100, income2))+
+  geom_count()
+
+ggplot(data=EDA1, aes(genhlth, income2))+
+  geom_count()
+```
+-->In visualization of Smoke and income level results are people with income level either has low or high smoke in routine. In visualization of general health and income level results are people with good health smoke frequently with both low and high level of income.
+
+
+**Research quesion 2:**
+
+```{r}
+EDA2 <- select(brfss2013, income2, sex, genhlth) %>%
+  filter(!is.na(income2), !is.na(sex), !is.na(genhlth))
+EDA2 %>%
+  group_by(income2) %>%
+  summary(count=n())
+
+ggplot(data=EDA2, aes(genhlth, income2))+
+  geom_count()
+```
+-->In visualization of general health and income level results has variation.
+
+
+**Research quesion 3:**
+
+```{r}
+EDA3 <- select(brfss2013, genhlth, sex, menthlth) %>%
+  filter(!is.na(genhlth), !is.na(sex), !is.na(menthlth))
+
+EDA3 %>%
+  group_by(genhlth) %>%
+  summary(count=n())
+
+
+ggplot(data=EDA3, aes(genhlth, menthlth))+
+  geom_count()
+
+```
+-->In visualization of EDA3 result has variation in having good mental health with good health.
